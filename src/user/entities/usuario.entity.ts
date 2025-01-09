@@ -1,8 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Exclude } from 'class-transformer';
 
-@Entity('users')
-export class User {
+@Entity('usuario')
+export class Usuario {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -18,9 +18,11 @@ export class User {
   @Column({ unique: true, length: 10 })
   telefono: string;
 
-  @Column()
-  @Exclude() // Excluye el campo en las respuestas
-  password: string; // Cambiado a inglés por convención
+  @Column('text', {
+    select: false
+  })
+  @Exclude()
+  password: string;
 
   @Column({ name: 'image_path', nullable: true })
   imagePath: string;
