@@ -1,43 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { UserService } from './usuario.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { CreateUsuarioDto, LoginUsuarioDto, UpdateUserDto } from './dto';
-import { AuthGuard } from '@nestjs/passport';
+import { CreateUsuarioDto, LoginUsuarioDto } from './dto';
+import { Usuario } from './entities/usuario.entity';
+import { Auth, GetUser } from './decorators';
+import { validRoles } from './interfaces';
+import * as fs from 'fs';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+    private readonly configService: ConfigService
+  ) { }
 
   @Post('registro')
   @UseInterceptors(
     FileInterceptor('imagen', {
       storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-          const extension = file.originalname.split('.').pop();
-          callback(null, `${file.fieldname}-${uniqueSuffix}.${extension}`)
+        destination: (req, file, cb) => {
+          const uploadPath = './statics/uploads';
+          if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+          }
+          cb(null, uploadPath);
+        },
+        filename: (req, file, cb) => {
+          const fileName: string = `${Date.now()}-${file.originalname.replace(/\s/g, '')}`;
+          cb(null, fileName);
         }
-      }),
-      fileFilter: (req, file, callback) => {
-        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-          return callback(new Error('Solo se permiten imagenes'), false)
-        }
-        callback(null, true)
-      }
+      })
     })
   )
-  createUser(
+  async createUser(
     @Body() createUserDto: CreateUsuarioDto,
-    @UploadedFile() file?: Express.Multer.File
+    @UploadedFile() file: Express.Multer.File,
   ) {
+    if (!file) {
+      throw new BadRequestException('No se ha proporcionado ningún archivo');
+    }
+
+    const serverUrl = this.configService.get('SERVER_URL');
     const userData = {
       ...createUserDto,
-      imagePath: file ? `uploads/${file.filename}` : null
-    }
+      imagePath: `${serverUrl}/statics/uploads/${file.filename}`
+    };
+
     return this.userService.create(userData);
   }
+
 
   @Post('login')
   loginUser(
@@ -46,32 +59,23 @@ export class UserController {
     return this.userService.login(LoginUsuarioDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Get('getMe')
+  @Auth(validRoles.user)
+  getMe(
+    @GetUser() user: Usuario
+  ) {
+    return this.userService.getMe(user);
   }
 
-  @Get('private')
-  @UseGuards(AuthGuard())
-  testingPrivateRout() {
-    return {
-      ok: true,
-      message: 'Hola mundo private'
-    }
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
+  // @Get('private2')
+  // @Auth(validRoles.admin)
+  // privateRoute2(
+  //   @GetUser() user: Usuario,
+  // ) {
+  //   return {
+  //     ok: true,
+  //     message: 'Hola mundo private 2',
+  //     user
+  //   }
+  // }
 }

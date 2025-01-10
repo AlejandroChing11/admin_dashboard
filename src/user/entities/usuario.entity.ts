@@ -42,12 +42,11 @@ export class Usuario {
   @Column({ name: 'color_favorito', length: 50, nullable: true })
   colorFavorito: string;
 
-  @Column({
-    type: 'enum',
-    enum: ['admin', 'user'],
-    default: 'user'
+  @Column('text', {
+    array: true,
+    default: ['user'],
   })
-  rol: string;
+  roles: string[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
