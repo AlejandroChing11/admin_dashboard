@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BeforeInsert, BeforeUpdate } from "typeorm";
 import { Exclude } from 'class-transformer';
 
 @Entity('usuario')
@@ -23,6 +23,9 @@ export class Usuario {
   })
   @Exclude()
   password: string;
+
+  @Column({ name: 'is_active', default: true })
+  isActive: boolean;
 
   @Column({ name: 'image_path', nullable: true })
   imagePath: string;
@@ -51,4 +54,15 @@ export class Usuario {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @BeforeInsert()
+  checkFieldsBeforeInsert() {
+    this.email = this.email.toLowerCase();
+  }
+
+  @BeforeUpdate()
+  checkFieldsBeforeUpdate() {
+    this.checkFieldsBeforeInsert();
+  }
+
 }

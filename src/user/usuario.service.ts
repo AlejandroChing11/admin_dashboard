@@ -6,6 +6,8 @@ import { Usuario } from './entities/usuario.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginUsuarioDto } from './dto';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
@@ -13,6 +15,8 @@ export class UserService {
   constructor(
     @InjectRepository(Usuario)
     private readonly userRepository: Repository<Usuario>,
+
+    private readonly jwtService: JwtService
   ) { }
 
   async create(createUserDto: CreateUsuarioDto) {
@@ -29,8 +33,10 @@ export class UserService {
       await this.userRepository.save(user)
       delete user.password
 
-      return user;
-      //TODO: retornar jwt
+      return {
+        ...user,
+        token: this.getJwtToken({ id: user.id })
+      };
 
     } catch (error) {
       console.log(error);
@@ -46,7 +52,7 @@ export class UserService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true }
+      select: { email: true, password: true, id: true }
     });
 
     if (!user) {
@@ -58,8 +64,19 @@ export class UserService {
       throw new UnauthorizedException('Credenciales inválidas: contraseña incorrecta');
     }
 
-    return user; //TODO: retornar jwt
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id })
+    };
   }
+
+  private getJwtToken(payload: JwtPayload) {
+
+    const token = this.jwtService.sign(payload);
+
+    return token
+
+  } 
 
   findAll() {
     return `This action returns all user`;

@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
 import { UserService } from './usuario.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { CreateUsuarioDto, LoginUsuarioDto, UpdateUserDto } from './dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class UserController {
@@ -48,6 +49,15 @@ export class UserController {
   @Get()
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Get('private')
+  @UseGuards(AuthGuard())
+  testingPrivateRout() {
+    return {
+      ok: true,
+      message: 'Hola mundo private'
+    }
   }
 
   @Get(':id')
