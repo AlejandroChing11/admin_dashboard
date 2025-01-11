@@ -13,6 +13,7 @@ async function bootstrap() {
     prefix: '/statics/',
   });
 
+  app.enableCors();
 
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
