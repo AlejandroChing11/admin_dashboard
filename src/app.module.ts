@@ -19,7 +19,7 @@ import { CommonModule } from './common/common.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true, //Solo en desarrollo
+      synchronize: false, //Solo en desarrollo
     }),
     UserModule,
     CommonModule
