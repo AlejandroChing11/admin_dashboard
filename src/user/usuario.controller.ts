@@ -42,7 +42,7 @@ export class UserController {
       throw new BadRequestException('No se ha proporcionado ningún archivo');
     }
 
-    const serverUrl = this.configService.get('SERVER_URL');
+    const serverUrl = this.configService.get('PROD_URL');
     const userData = {
       ...createUserDto,
       imagePath: `${serverUrl}/statics/uploads/${file.filename}`
