@@ -18,6 +18,11 @@ export class Usuario {
   @Column({ unique: true, length: 10 })
   telefono: string;
 
+  @Column({
+    nullable: true,
+  })
+  pais: string;
+
   @Column('text', {
     select: false
   })

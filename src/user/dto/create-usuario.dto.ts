@@ -17,6 +17,10 @@ export class CreateUsuarioDto {
   telefono: string;
 
   @IsString()
+  @MinLength(2)
+  pais: string;
+
+  @IsString()
   @MinLength(6)
   @MaxLength(50)
   @Matches(
