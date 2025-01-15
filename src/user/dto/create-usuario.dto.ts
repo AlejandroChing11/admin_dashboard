@@ -18,6 +18,7 @@ export class CreateUsuarioDto {
 
   @IsString()
   @MinLength(2)
+  @IsOptional()
   pais: string;
 
   @IsString()
@@ -31,18 +32,22 @@ export class CreateUsuarioDto {
 
   @IsString()
   @MaxLength(50)
+  @IsOptional()
   comidaFavorita: string;
 
   @IsString()
   @MaxLength(50)
+  @IsOptional()
   artistaFavorito: string;
 
   @IsString()
   @MaxLength(50)
+  @IsOptional()
   lugarFavorito: string;
 
   @IsString()
   @MaxLength(50)
+  @IsOptional()
   colorFavorito: string;
 
 }

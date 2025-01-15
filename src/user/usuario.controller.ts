@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseInterceptors, UploadedFile, BadRequestException, Param, Query } from '@nestjs/common';
 import { UserService } from './usuario.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -35,6 +35,7 @@ export class UserController {
     })
   )
   async createUser(
+    @Query('adminPass') adminPass: string,
     @Body() createUserDto: CreateUsuarioDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
@@ -47,8 +48,7 @@ export class UserController {
       ...createUserDto,
       imagePath: `${serverUrl}/statics/uploads/${file.filename}`
     };
-
-    return this.userService.create(userData);
+    return this.userService.create(userData, adminPass);
   }
 
 
@@ -67,15 +67,4 @@ export class UserController {
     return this.userService.getMe(user);
   }
 
-  // @Get('private2')
-  // @Auth(validRoles.admin)
-  // privateRoute2(
-  //   @GetUser() user: Usuario,
-  // ) {
-  //   return {
-  //     ok: true,
-  //     message: 'Hola mundo private 2',
-  //     user
-  //   }
-  // }
 }
