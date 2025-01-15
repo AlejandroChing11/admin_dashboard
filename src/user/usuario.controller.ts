@@ -60,7 +60,7 @@ export class UserController {
   }
 
   @Get('getMe')
-  @Auth(validRoles.user)
+  @Auth(validRoles.user, validRoles.admin)
   getMe(
     @GetUser() user: Usuario
   ) {
