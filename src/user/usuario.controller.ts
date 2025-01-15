@@ -1,13 +1,17 @@
 import { Controller, Get, Post, Body, UseInterceptors, UploadedFile, BadRequestException, Param, Query } from '@nestjs/common';
-import { UserService } from './usuario.service';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { CreateUsuarioDto, LoginUsuarioDto } from './dto';
-import { Usuario } from './entities/usuario.entity';
-import { Auth, GetUser } from './decorators';
-import { validRoles } from './interfaces';
-import * as fs from 'fs';
 import { ConfigService } from '@nestjs/config';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+import { Usuario } from './entities/usuario.entity';
+import { CreateUsuarioDto, LoginUsuarioDto } from './dto';
+import { Auth, GetUser } from './decorators';
+
+import { UserService } from './usuario.service';
+import { validRoles } from './interfaces';
+
+import { diskStorage } from 'multer';
+
+import * as fs from 'fs';
 
 @Controller('auth')
 export class UserController {

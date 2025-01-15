@@ -1,7 +1,8 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Usuario } from 'src/user/entities/usuario.entity';
 import { Repository } from 'typeorm';
+
+import { Usuario } from 'src/user/entities/usuario.entity';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 
 @Injectable()

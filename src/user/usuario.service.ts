@@ -1,14 +1,17 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { UpdateUserDto } from './dto/update-usuario.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Usuario } from './entities/usuario.entity';
-import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { LoginUsuarioDto } from './dto';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+
+import { Usuario } from './entities/usuario.entity';
+import { CreateUsuarioDto } from './dto/create-usuario.dto';
+import { LoginUsuarioDto } from './dto';
+
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+
+import * as bcrypt from 'bcrypt';
+
 import axios from 'axios';
 
 @Injectable()

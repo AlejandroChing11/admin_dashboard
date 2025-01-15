@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, ParseUUIDPipe } from '@nestjs/common';
-import { CommonService } from './common.service';
+
 import { Auth, GetUser } from 'src/user/decorators';
+import { CommonService } from './common.service';
 import { validRoles } from 'src/user/interfaces';
+
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
 
 @Controller('common')
