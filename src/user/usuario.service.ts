@@ -116,6 +116,7 @@ export class UserService {
           nombre: true,
           apellido: true,
           email: true,
+          roles: true,
           imagePath: true,
           comidaFavorita: true,
           artistaFavorito: true,
